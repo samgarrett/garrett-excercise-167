@@ -1,0 +1,324 @@
+//AUTHOR: SAM GARRETT
+//COURSE: CPT 167
+//DESCRIPTION: sodNotZod Sales Program. The program 
+// calculates sales totals and final reports for the sales that day.
+//START DATE: 4/15/2020
+package edu.cpt167.participation4;
+
+import java.util.Scanner;
+
+public class NewZodNotZodVoidMethod {
+	
+	//INTRODUCTION
+	//DECLARE CONSTANTS
+	public static final double DISCOUNT_RATE_MEMBER = .15;
+	public static final double DISCOUNT_RATE_SENIOR = .25;
+	public static final double DISCOUNT_RATE_NONE = 0.0;
+	public static final String NAME_MEMBER = "Member Discount";
+	public static final String NAME_SENIOR = "Senior Discount";
+	public static final String NAME_NONE = "No Discount";
+	public static final double TAX_RATE = .075;
+	public static final double MAX_PURCHASE_COUNT = 2; //MAX SOD SELECTION PER TRANSACTION
+	public static final String PREMIUM_NAME = "Batman Black";
+	public static final String SPECIAL_NAME = "Joker Green";
+	public static final String BASIC_NAME = "Harley Blue";
+	public static final double PREMIUM_PRICE = 1.89;
+	public static final double SPECIAL_PRICE = 1.39;
+	public static final double BASIC_PRICE= 0.99;
+	public static final String MENU_QUIT = "QUIT";
+	public static final double RESET_VALUE = 0;
+	
+
+	public static void main(String[] args) {
+		
+		
+		//SCANNER INPUT
+		Scanner input = new Scanner(System.in);
+		
+		
+		//DECLARE VARIABLES
+		String userName = "";
+		char discountSelection = ' ';
+		char itemSelection = ' ';
+		int memberCount = 0;
+		int seniorCount = 0;
+		int noDiscountCount = 0;
+		int premiumCount = 0;
+		int specialCount = 0;
+		int basicCount = 0; 
+		int purchaseCounter = 0;
+		String discountName = "";
+		double discountRate = 0.0;
+		String itemName = "";
+		double itemPrice = 0.0;
+		double discountAmount = 0.0;
+		double discountPrice = 0.0;
+		int howMany = 0;
+		double subTotal = 0.0;
+		double tax = 0.0;
+		double totalCost = 0.0;
+		double grandTotal = 0.0;
+		
+		//WELCOME BANNER
+		displayWelcomeBanner();
+		
+		//INPUT
+		userName = getUserName(input);
+		
+		System.out.println("\nThank you, " + userName + ".\n");
+		
+		//DISCOUNT MENU 
+		discountSelection = validateDiscountSelection(input);
+		
+		//BEGINNING OF WHILE LOOP MAIN 
+		while (discountSelection != 'Q')
+		{
+			if(purchaseCounter < MAX_PURCHASE_COUNT)
+			{
+				itemSelection = validateItemSelection(input);
+				//VALIDATE QUANTITY
+				howMany = validateHowMany(input);
+				
+				//DISCOUNT SELECTION PROCESS
+				if (discountSelection == 'A')
+				{
+					discountName = NAME_MEMBER; 
+					discountRate = DISCOUNT_RATE_MEMBER;
+					memberCount++;
+				}
+				else if (discountSelection == 'B')
+				{
+					discountName = NAME_SENIOR;
+					discountRate = DISCOUNT_RATE_SENIOR;
+					seniorCount++;
+				}
+				else
+				{
+					discountName = NAME_NONE;
+					discountRate = DISCOUNT_RATE_NONE;
+					noDiscountCount++;
+				} // END OF IF/ELSE LOOP DISCOUNT
+		
+				//ITEM SELECTION PROCESS
+				if (itemSelection == 'A')
+				{
+					itemName = PREMIUM_NAME;
+					itemPrice = PREMIUM_PRICE;
+					premiumCount++;
+				}
+				else if (itemSelection == 'B')
+				{
+					itemName = SPECIAL_NAME;
+					itemPrice = SPECIAL_PRICE;
+					specialCount++;
+				}
+				else
+				{
+					itemName = BASIC_NAME;
+					itemPrice = BASIC_PRICE;
+					basicCount++;
+				}	// END OF IF/ELSE LOOP
+			
+			
+				//CALCULATE 
+				discountAmount = itemPrice * discountRate;
+				discountPrice = itemPrice - discountAmount;
+				subTotal = howMany * discountPrice;
+				tax = subTotal * TAX_RATE;
+				totalCost = subTotal + tax;
+				grandTotal = grandTotal + totalCost;
+			
+			
+				//RECIEPT 
+				displayItemReciept(itemName, itemPrice, discountName, discountRate, howMany);
+				
+				//INCREMENT COUNTER
+				purchaseCounter++;
+			}
+			
+			//ORDER TOTAL
+			displayOrderTotal(subTotal, tax, totalCost);
+			
+			//RESET VALUES
+			totalCost = RESET_VALUE;
+			
+			discountSelection = validateDiscountSelection(input);
+			
+		} //END OF WHILE LOOP
+		
+		//OUTPUT FINAL REPORTS
+		if (grandTotal > 0.0)
+		{
+			displayFinalReport(userName, memberCount, seniorCount, noDiscountCount, specialCount, 
+					premiumCount, basicCount, grandTotal);
+		}//END OF FINAL REPORT
+		
+		//FAREWELL MESSAGE
+		displayFarewellMessage();
+		
+		//CLOSE SCANNER
+		input.close();
+		
+
+	}// END OF MAIN METHOD
+	
+	//WELCOME BANNER
+	public static void displayWelcomeBanner()
+	{
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("Welcome to SODNOTZOD");
+		System.out.println("This program will help you calculate");
+		System.out.println("your sales, and daily totals");
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	}//END OF WELCOME BANNER
+	
+	//FAREWELL MESSAGE
+	public static void displayFarewellMessage()
+	{
+		System.out.println("\n***** ***** ***** ***** ***** *****");
+		System.out.println("Thank you for your business today!");
+		System.out.println("Have a great Day!");
+		System.out.println("***** ***** ***** ***** ***** *****");
+	}//END OF FAREWELL MESSAGE
+	
+	// GET USERNAME
+	public static String getUserName(Scanner input)
+	{
+		String localUserName = "";
+		System.out.println("To get started, what is your first name?");
+		localUserName = input.next();
+		return localUserName;
+	}// END OF USER NAME METHOD
+	
+	//DISCOUNT MENU
+	public static void displayDiscountMenu()
+	{
+		System.out.println("DISCOUNT MENU");
+		System.out.printf("%-8s%-5s\n", "[A] for", NAME_MEMBER);
+		System.out.printf("%-8s%-5s\n", "[B] for", NAME_SENIOR);
+		System.out.printf("%-8s%-5s\n", "[C] for", NAME_NONE);
+		System.out.printf("%-8s%-5s\n", "[Q] for", MENU_QUIT);
+		System.out.println("Enter your selection here: ");	
+	}//END OF DISCOUNTMENU
+	
+	// DISCOUNT VR METHOD
+	public static char validateDiscountSelection(Scanner borrowedInput)
+	{
+		char tempDiscountSelection;
+		displayDiscountMenu();
+		tempDiscountSelection = borrowedInput.next().toUpperCase().charAt(0);
+		
+		// WHILE LOOP DISCOUNT SELECTION
+		while (tempDiscountSelection != 'A' && tempDiscountSelection != 'B' && tempDiscountSelection != 'C' 
+				&& tempDiscountSelection != 'Q')
+		{
+			System.out.println("\nInvalid Entry.\n");
+			displayDiscountMenu();
+			tempDiscountSelection = borrowedInput.next().toUpperCase().charAt(0);
+		}// END OF WHILE LOOP DISCOUNT SELECTION
+		return tempDiscountSelection;
+	}//END OF DISCOUNT VR METHOD
+	
+	//ITEM SELECTION MENU
+	public static void displayItemMenu()
+	{
+		System.out.println("ITEM MENU");
+		System.out.printf("%-8s%-5s%5s%5.2f\n", "[A] for: ", PREMIUM_NAME, "$", PREMIUM_PRICE);
+		System.out.printf("%-8s%-5s%6s%5.2f\n", "[B] for: ", SPECIAL_NAME, "$", SPECIAL_PRICE);
+		System.out.printf("%-8s%-5s%6s%5.2f\n", "[C] for: ", BASIC_NAME, "$", BASIC_PRICE);
+		System.out.printf("%-8s%-5s\n", "[Q] for: ", MENU_QUIT);
+		System.out.println("Enter your selection here: ");
+	}//END OF ITEM SELECTION MENU
+
+	// ITEM SELECTION VR METHOD
+	public static char validateItemSelection(Scanner borrowedInput)
+	{
+		char tempItemSelection;
+		displayItemMenu();
+		tempItemSelection = borrowedInput.next().toUpperCase().charAt(0);
+		
+		//WHILE LOOP ITEM SELECTION
+		while (tempItemSelection != 'A' && tempItemSelection != 'B' && tempItemSelection != 'C'
+				&& tempItemSelection != 'Q')
+		{
+			System.out.println("\nInvalid Entry.\n");
+			displayItemMenu();
+			tempItemSelection = borrowedInput.next().toUpperCase().charAt(0);
+		}//END OF WHILE LOOP ITEM SELECTION
+		return tempItemSelection;
+	} //END OF ITEM SELECTION VR METHOD
+	
+	//QUANTITY PROMPT
+	public static void displayQuantityPrompt()
+	{
+		System.out.print("\nEnter Quantity: ");
+	} //END OF QUANTITY PROMPT
+	
+	// HOWMANY VOID METHOD
+	public static int validateHowMany(Scanner borrowedInput)
+	{
+		int tempHowMany = 0; 
+		displayQuantityPrompt();
+		tempHowMany = borrowedInput.nextInt();
+		System.out.println();
+		
+		while (tempHowMany < 0.0)
+		{
+			System.out.println("Quantity can not be less than 0\n");
+			displayQuantityPrompt();
+			tempHowMany = borrowedInput.nextInt();
+			System.out.println();
+		}// END OF WHILE LOOP
+		return tempHowMany;
+	}	//END OF HOWMANY VOID METHOD
+	
+	
+	public static void displayItemReciept (String borrowedItemName, double borrowedItemPrice, 
+			String borrowedDiscountName, double borrowedDiscountPrice, int borrowedHowMany)
+	{
+		System.out.println("***** ***** ***** ***** ***** *****");
+		System.out.println("ITEM RECIEPT");
+		System.out.println("***** ***** ***** ***** ***** *****");
+		System.out.printf("%-23s%8s\n", "Item Name:", borrowedItemName);
+		System.out.printf("%-25s%5s%5.2f\n", "Item Price:", "$", borrowedItemPrice);
+		System.out.printf("%-20s%8s\n", "Discount Name:", borrowedDiscountName);
+		System.out.printf("%-25s%5s%5.2f\n", "Discount Price:", "$", borrowedDiscountPrice);
+		System.out.printf("%-27s%8d\n", "Quantity:", borrowedHowMany);
+		System.out.println("***** ***** ***** ***** ***** *****");
+		System.out.println();
+	}
+	
+	public static void displayFinalReport (String borrowedUserName, int borrowedMemberCount, int borrowedSeniorCount, 
+			int borrowedNoDiscountCount, int borrowedPremiumCount, int borrowedSpecialCount, int borrowedBasicCount, 
+			double borrowedGrandTotal)
+	{
+		System.out.println("\n\n***** ***** ***** ***** ***** *****");
+		System.out.println(borrowedUserName + "'s END-OF-DAY REPORT");
+		System.out.println("***** ***** ***** ***** ***** *****");
+		System.out.printf("%-25s%-2s%8s\n", "Final Member Sales:", "",
+				borrowedMemberCount);
+		System.out.printf("%-25s%-2s%8s\n", "Final Senior Sales:", "", 
+				borrowedSeniorCount);
+		System.out.printf("%-25s%-2s%8s\n", "Final Sales No Discounts:", "", 
+				borrowedNoDiscountCount);
+		System.out.printf("%-25s%-2s%8s\n", "Premium Sod Sales:", "",
+				borrowedPremiumCount);
+		System.out.printf("%-25s%-2s%8s\n", "Special Sod Sales:", "",
+				borrowedSpecialCount);
+		System.out.printf("%-25s%-2s%8s\n", "Basic Sod Sales", "",
+				borrowedBasicCount);
+		System.out.printf("%-25s%-2s%8.2f\n", "Final Sales Total:", "$", borrowedGrandTotal);
+		System.out.println("***** ***** ***** ***** ***** *****");
+		
+	}
+	
+	public static void displayOrderTotal (double borrowedSubTotal, double borrowedTax, double borrowedTotalCost)
+	{
+		System.out.println("\n***** ***** ORDER TOTAL ***** *****");
+		System.out.printf("%-25s%-2s%8.2f\n", "Subtotal:", "$", borrowedSubTotal);
+		System.out.printf("%-25s%-2s%8.2f\n", "Tax:", "$", borrowedTax);
+		System.out.printf("%-25s%-2s%8.2f\n", "Total Cost:", "$", borrowedTotalCost);
+		System.out.println("***** ***** ***** ***** ***** *****");
+	}
+
+}
